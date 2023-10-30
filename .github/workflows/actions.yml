@@ -1,11 +1,11 @@
 ---
-name: Test, Manage
+name: Tests
 
 on: [push]
 
 jobs:
   build:
-    name: Tests and Run
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo content
@@ -23,6 +23,3 @@ jobs:
 
       - name: Tests
         run: python manage test.py
-
-      - name: execute py script
-        run: python manage.py
