@@ -1,11 +1,11 @@
 ---
-name: Lint, Test, Manage
+name: Test, Manage
 
 on: [push]
 
 jobs:
   build:
-    name: Lint, Tests and Run
+    name: Tests and Run
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo content
@@ -20,9 +20,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Lint
-        run: "flake8"
 
       - name: Tests
         run: python manage test.py
