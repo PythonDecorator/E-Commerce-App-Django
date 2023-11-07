@@ -14,14 +14,13 @@ import os
 import random
 import string
 from pathlib import Path
-
+import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables from .env.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-APP_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -32,12 +31,19 @@ if not SECRET_KEY:
     SECRET_KEY = ''.join(random.choice(string.ascii_lowercase) for i in range(32))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get('DEBUG', 1)))
+# DEBUG = bool(int(os.environ.get('DEBUG', 1)))
+
+# Render Deployment Code
+DEBUG = 'RENDER' not in os.environ
 
 # Assets Management
 ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
 
 ALLOWED_HOSTS = []
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # Application definition
 
@@ -61,6 +67,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,10 +77,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'app.urls'
-LOGIN_URL = "user:login"
-LOGIN_REDIRECT_URL = "shop:index"
 
-TEMPLATE_DIR = os.path.join(APP_DIR, "app/templates")
+TEMPLATE_DIR = os.path.join(BASE_DIR, "app/templates")
 
 TEMPLATES = [
     {
@@ -103,24 +108,29 @@ DB_HOST = os.getenv('DB_HOST', None)
 DB_PORT = os.getenv('DB_PORT', None)
 DB_NAME = os.getenv('DB_NAME', None)
 
-if DB_ENGINE and DB_NAME and DB_USERNAME:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.' + DB_ENGINE,
-            'NAME': DB_NAME,
-            'USER': DB_USERNAME,
-            'PASSWORD': DB_PASS,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
-        },
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite3',
-        }
-    }
+# if DB_ENGINE and DB_NAME and DB_USERNAME:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.' + DB_ENGINE,
+#             'NAME': DB_NAME,
+#             'USER': DB_USERNAME,
+#             'PASSWORD': DB_PASS,
+#             'HOST': DB_HOST,
+#             'PORT': DB_PORT,
+#         },
+#     }
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': 'db.sqlite3',
+#         }
+#     }
+
+DATABASES = {
+    'default': dj_database_url.config(default=f'postgresql://{DB_USERNAME}:{DB_PASS}@localhost:5432/{DB_NAME}',
+                                      conn_max_age=600)
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -156,14 +166,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(APP_DIR, 'staticfiles')
+
 STATIC_URL = '/static/'
-MEDIA_ROOT = os.path.join(APP_DIR, 'app/static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'app/static')
 MEDIA_URL = 'app/static/'
 
 # Extra places for collect-static to find static files.
 STATICFILES_DIRS = (
-    os.path.join(APP_DIR, 'app/static'),
+    os.path.join(BASE_DIR, 'app/static'),
 )
 
 # Default primary key field type
@@ -180,3 +195,8 @@ SPECTACULAR_SETTINGS = {
 }
 
 AUTH_USER_MODEL = 'core.User'
+
+LOGIN_URL = "user:login"
+LOGIN_REDIRECT_URL = "shop:index"
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
