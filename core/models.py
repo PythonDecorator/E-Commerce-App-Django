@@ -3,12 +3,12 @@ Models for the E-commerce App
 """
 import uuid
 import os
-import datetime
 
 from PIL import Image
 
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
@@ -60,8 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=150, blank=True, null=True, verbose_name="First Name")
     last_name = models.CharField(max_length=150, blank=True, null=True, verbose_name="Last Name")
-    date_joined = models.DateTimeField(auto_now=False, auto_now_add=False,
-                                       default=datetime.datetime.now(), verbose_name='date joined')
+    date_joined = models.DateTimeField(default=timezone.now, verbose_name='date joined')
     last_login = models.DateTimeField(blank=True, null=True, verbose_name='last login')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
