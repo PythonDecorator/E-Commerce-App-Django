@@ -2,7 +2,13 @@
 # exit on error
 set -o errexit
 
-poetry install
+echo "Installing the latest version of poetry..."
+
+pip install --upgrade pip
+
+pip install poetry==1.7.0
+
+python -m poetry install
 
 python -m pip install --upgrade pip
 
