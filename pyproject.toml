@@ -6,7 +6,7 @@ authors = ["PythonDecorator <okpeamos.ao@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.8.1"
 django = "^3.2.22"
 psycopg2 = "^2.9.9"
 whitenoise = {extras = ["brotli"], version = "^6.6.0"}
