@@ -6,7 +6,7 @@ echo "Installing the latest version of poetry..."
 
 pip install --upgrade pip
 
-pip install poetry==1.7.0
+pip install poetry==1.5.1
 
 python -m poetry install
 
