@@ -77,9 +77,6 @@ class Profile(models.Model):
     address = models.CharField(max_length=255, null=True)
     state = models.CharField(max_length=255, null=True)
 
-    # image = models.ImageField(null=True, default="uploads/profile_images/default.png.jpg",
-    #                           upload_to=profile_image_file_path)
-
     def __str__(self):
         """Return the name of the user."""
         return self.username
