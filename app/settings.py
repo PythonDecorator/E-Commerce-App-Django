@@ -108,29 +108,29 @@ DB_HOST = os.getenv('DB_HOST', None)
 DB_PORT = os.getenv('DB_PORT', None)
 DB_NAME = os.getenv('DB_NAME', None)
 
-# if DB_ENGINE and DB_NAME and DB_USERNAME:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.' + DB_ENGINE,
-#             'NAME': DB_NAME,
-#             'USER': DB_USERNAME,
-#             'PASSWORD': DB_PASS,
-#             'HOST': DB_HOST,
-#             'PORT': DB_PORT,
-#         },
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': 'db.sqlite3',
-#         }
-#     }
+if DB_ENGINE and DB_NAME and DB_USERNAME:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.' + DB_ENGINE,
+            'NAME': DB_NAME,
+            'USER': DB_USERNAME,
+            'PASSWORD': DB_PASS,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        },
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'tset.sqlite3',
+        }
+    }
 
-DATABASES = {
-    'default': dj_database_url.config(default=f'postgresql://{DB_USERNAME}:{DB_PASS}@localhost:5432/{DB_NAME}',
-                                      conn_max_age=600)
-}
+# DATABASES = {
+#     'default': dj_database_url.config(default=f'postgresql://{DB_USERNAME}:{DB_PASS}@localhost:5432/{DB_NAME}',
+#                                       conn_max_age=600)
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

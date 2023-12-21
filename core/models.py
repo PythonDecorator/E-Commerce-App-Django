@@ -89,18 +89,6 @@ class Profile(models.Model):
         """Make a username property."""
         return self.user.email
 
-    # resizing images
-    # def save(self, *args, **kwargs):
-    #     """Save a smaller image."""
-    #     super().save()
-    #
-    #     img = Image.open(self.image.path)
-    #
-    #     if img.height > 100 or img.width > 100:
-    #         new_img = (100, 100)
-    #         img.thumbnail(new_img)
-    #         img.save(self.image.path)
-
 
 class Product(models.Model):
     """Product object."""
